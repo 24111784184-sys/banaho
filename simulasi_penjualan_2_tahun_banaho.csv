@@ -1,0 +1,335 @@
+Tanggal,Mitra,Kategori,Varian,Jumlah,Satuan,HargaSatuan,Total,Status
+2022-01-03,Toko Madura,Toko Oleh-oleh,Campur,10,pcs,4500,45000,Lunas
+2022-01-03,Toko Asi,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2022-01-04,Toko Ririn,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas
+2022-01-04,Mbak Antik,Reseller Kiloan,Gurih,2,kg,45000,90000,Lunas
+2022-01-06,Rest Area,Rest Area / Wisata,Campur,20,pcs,5000,100000,Lunas
+2022-01-06,Toko Teseh,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2022-01-06,Toko Butun,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas
+2022-01-09,Bu Endang,Reseller Kiloan,Gurih,2,kg,45000,90000,Lunas
+2022-01-10,Toko Bakur,Toko Oleh-oleh,Campur,10,pcs,4500,45000,Lunas
+2022-01-10,Toko Azla,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas
+2022-01-11,Toko Indah,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2022-01-13,Toko Manjung,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2022-01-13,Toko Tanjung,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas
+2022-01-15,Mbok Jari,Reseller Kiloan,Campur,3,kg,48333,145000,Lunas
+2022-01-17,Mbak Mika,Reseller Kiloan,Gurih,2,kg,45000,90000,Lunas
+2022-01-20,Rest Area,Rest Area / Wisata,Campur,20,pcs,5000,100000,Lunas
+2022-01-20,Toko Teseh,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2022-01-20,Toko Asi,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas
+2022-01-20,Toko Becok,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2022-01-25,Mbak Linda,Reseller Kiloan,Manis,3,kg,45000,135000,Lunas
+2022-01-25,Mbak Endang,Reseller Kiloan,Gurih,1.5,kg,45000,67500,Lunas
+2022-02-01,Toko Karasan,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2022-02-03,Toko Karasan,Toko Oleh-oleh,Campur,10,pcs,4500,45000,Lunas
+2022-02-04,Mbak Linda,Reseller Kiloan,Campur,2,kg,45000,90000,Lunas
+2022-02-05,Toko Butun,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2022-02-08,Bu Siti,Reseller Kiloan,Manis,1.5,kg,45000,67500,Lunas
+2022-02-09,Toko Indah,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2022-02-18,Toko Manjung,Toko Oleh-oleh,Manis,20,pcs,4500,90000,Lunas
+2022-02-19,Toko Madura,Toko Oleh-oleh,Campur,15,pcs,4500,67500,Lunas
+2022-02-24,Cak Slamet,Reseller Kiloan,Manis,1,kg,45000,45000,Lunas
+2022-02-25,Mas Wahyu,Reseller Kiloan,Campur,2.5,kg,45000,112500,Lunas
+2022-03-02,Toko Manjung,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2022-03-03,Toko Butun,Toko Oleh-oleh,Campur,10,pcs,4500,45000,Lunas
+2022-03-04,Bu Tutik,Reseller Kiloan,Campur,3,kg,45000,135000,Lunas
+2022-03-07,Toko Barokah Maospati,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas
+2022-03-08,Kios Wisata Sarangan,Rest Area / Wisata,Manis,30,pcs,5000,150000,Lunas
+2022-03-10,Toko Indah,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2022-03-13,Mbak Endang,Reseller Kiloan,Manis,2,kg,45000,90000,Lunas
+2022-03-19,Toko Asi,Toko Oleh-oleh,Campur,10,pcs,4500,45000,Lunas
+2022-03-22,Toko Sarangan Asri,Toko Oleh-oleh,Manis,15,pcs,4500,67500,Lunas
+2022-03-23,Toko Rais,Toko Oleh-oleh,Gurih,20,pcs,4500,90000,Lunas
+2022-03-25,Mbak Linda,Reseller Kiloan,Campur,2,kg,45000,90000,Lunas
+2022-03-28,Rest Area KM 597,Rest Area / Wisata,Gurih,20,pcs,5000,100000,Lunas
+2022-04-01,Mbak Ria,Reseller Kiloan,Campur,5,kg,45000,225000,Lunas
+2022-04-02,Mbak Endang,Reseller Kiloan,Campur,3,kg,45000,135000,Lunas
+2022-04-03,Toko Becok,Toko Oleh-oleh,Gurih,30,pcs,4500,135000,Lunas
+2022-04-04,Toko Butun,Toko Oleh-oleh,Campur,20,pcs,4500,90000,Lunas
+2022-04-05,Mbak Ria,Reseller Kiloan,Campur,3,kg,45000,135000,Lunas
+2022-04-06,Bu Endang,Reseller Kiloan,Campur,2.5,kg,45000,112500,Lunas
+2022-04-09,Toko Ririn,Toko Oleh-oleh,Campur,10,pcs,4500,45000,Lunas
+2022-04-13,Mbak Titik,Reseller Kiloan,Gurih,2,kg,45000,90000,Lunas
+2022-04-14,Rest Area KM 597,Rest Area / Wisata,Campur,20,pcs,5000,100000,Lunas
+2022-04-15,Toko Yuli,Toko Oleh-oleh,Gurih,30,pcs,4500,135000,Lunas
+2022-04-16,Mbak Endang,Reseller Kiloan,Campur,2.5,kg,45000,112500,Lunas
+2022-04-17,Toko Sarangan Asri,Toko Oleh-oleh,Campur,20,pcs,4500,90000,Lunas
+2022-04-18,Toko Becok,Toko Oleh-oleh,Gurih,20,pcs,4500,90000,Lunas
+2022-04-20,Mbak Dina,Reseller Kiloan,Campur,3,kg,45000,135000,Lunas
+2022-04-21,Toko Barokah Maospati,Toko Oleh-oleh,Gurih,20,pcs,4500,90000,Lunas
+2022-04-24,Toko Indah,Toko Oleh-oleh,Gurih,20,pcs,4500,90000,Lunas
+2022-04-25,Mbak Antik,Reseller Kiloan,Gurih,2,kg,45000,90000,Lunas
+2022-04-28,Toko Madura,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas
+2022-04-29,Bu Marmi,Reseller Kiloan,Campur,4,kg,45000,180000,Lunas
+2022-05-04,Toko Azla,Toko Oleh-oleh,Gurih,30,pcs,4500,135000,Lunas
+2022-05-05,Mbak Endang,Reseller Kiloan,Gurih,2.5,kg,45000,112500,Lunas
+2022-05-07,Toko Barokah Maospati,Toko Oleh-oleh,Gurih,30,pcs,4500,135000,Lunas
+2022-05-08,Toko Barokah Maospati,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2022-05-12,Toko Azla,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2022-05-14,Rest Area,Rest Area / Wisata,Campur,25,pcs,5000,125000,Lunas
+2022-05-16,Toko Asi,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas
+2022-05-17,Toko Karasan,Toko Oleh-oleh,Manis,25,pcs,4500,112500,Lunas
+2022-05-18,Rest Area KM 597,Rest Area / Wisata,Gurih,25,pcs,5000,125000,Lunas
+2022-05-19,Mbak Linda,Reseller Kiloan,Campur,4,kg,45000,180000,Lunas
+2022-05-21,Toko Bakur,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2022-05-23,Bu Endang,Reseller Kiloan,Gurih,3,kg,45000,135000,Lunas
+2022-05-24,Toko Sarangan Asri,Toko Oleh-oleh,Campur,20,pcs,4500,90000,Lunas
+2022-05-25,Toko Yuli,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2022-05-26,Mbak Mika,Reseller Kiloan,Gurih,4,kg,45000,180000,Lunas
+2022-05-27,Toko Teseh,Toko Oleh-oleh,Campur,10,pcs,4500,45000,Lunas
+2022-05-28,Mbak Dina,Reseller Kiloan,Campur,5,kg,45000,225000,Lunas
+2022-05-29,Bu Siti,Reseller Kiloan,Manis,2.5,kg,45000,112500,Lunas
+2022-05-31,Bu Siti,Reseller Kiloan,Gurih,3,kg,45000,135000,Lunas
+2022-06-01,Rest Area,Rest Area / Wisata,Gurih,40,pcs,5000,200000,Lunas
+2022-06-03,Toko Bakur,Toko Oleh-oleh,Campur,10,pcs,4500,45000,Lunas
+2022-06-04,Bu Endang,Reseller Kiloan,Manis,3,kg,45000,135000,Lunas
+2022-06-05,Toko Rais,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas
+2022-06-06,Kios Wisata Sarangan,Rest Area / Wisata,Manis,30,pcs,5000,150000,Lunas
+2022-06-07,Toko Asi,Toko Oleh-oleh,Campur,25,pcs,4500,112500,Lunas
+2022-06-09,Toko Butun,Toko Oleh-oleh,Campur,30,pcs,4500,135000,Lunas
+2022-06-10,Toko Madura,Toko Oleh-oleh,Gurih,30,pcs,4500,135000,Lunas
+2022-06-11,Mbak Antik,Reseller Kiloan,Gurih,2,kg,45000,90000,Lunas
+2022-06-15,Mbak Mika,Reseller Kiloan,Manis,1.5,kg,45000,67500,Lunas
+2022-06-18,Bu Endang,Reseller Kiloan,Campur,2,kg,45000,90000,Lunas
+2022-06-19,Mbak Ria,Reseller Kiloan,Gurih,3,kg,45000,135000,Lunas
+2022-06-20,Kios Wisata Sarangan,Rest Area / Wisata,Campur,40,pcs,5000,200000,Lunas
+2022-06-21,Bu Tutik,Reseller Kiloan,Manis,1.5,kg,45000,67500,Lunas
+2022-06-22,Toko Manjung,Toko Oleh-oleh,Gurih,25,pcs,4500,112500,Lunas
+2022-06-24,Toko Teseh,Toko Oleh-oleh,Campur,10,pcs,4500,45000,Lunas
+2022-06-26,Toko Becok,Toko Oleh-oleh,Campur,20,pcs,4500,90000,Lunas
+2022-07-01,Rest Area KM 597,Rest Area / Wisata,Campur,30,pcs,5000,150000,Lunas
+2022-07-04,Mbak Titik,Reseller Kiloan,Manis,2,kg,45000,90000,Lunas
+2022-07-06,Mas Wahyu,Reseller Kiloan,Gurih,1.5,kg,45000,67500,Lunas
+2022-07-08,Toko Asi,Toko Oleh-oleh,Manis,25,pcs,4500,112500,Lunas
+2022-07-09,Toko Yuli,Toko Oleh-oleh,Manis,25,pcs,4500,112500,Lunas
+2022-07-11,Mbak Dina,Reseller Kiloan,Campur,2.5,kg,45000,112500,Lunas
+2022-07-13,Toko Karasan,Toko Oleh-oleh,Gurih,25,pcs,4500,112500,Lunas
+2022-07-14,Toko Butun,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2022-07-24,Bu Siti,Reseller Kiloan,Campur,2,kg,45000,90000,Lunas
+2022-07-26,Toko Azla,Toko Oleh-oleh,Manis,20,pcs,4500,90000,Lunas
+2022-07-27,Toko Becok,Toko Oleh-oleh,Gurih,20,pcs,4500,90000,Lunas
+2022-07-28,Toko Yuli,Toko Oleh-oleh,Campur,25,pcs,4500,112500,Lunas
+2022-07-29,Mbak Mika,Reseller Kiloan,Gurih,3,kg,45000,135000,Lunas
+2022-07-30,Kios Wisata Sarangan,Rest Area / Wisata,Gurih,50,pcs,5000,250000,Lunas
+2022-07-31,Toko Tanjung,Toko Oleh-oleh,Campur,25,pcs,4500,112500,Lunas
+2022-08-06,Mbak Antik,Reseller Kiloan,Manis,2,kg,45000,90000,Lunas
+2022-08-07,Toko Indah,Toko Oleh-oleh,Manis,15,pcs,4500,67500,Lunas
+2022-08-10,Toko Asi,Toko Oleh-oleh,Campur,15,pcs,4500,67500,Lunas
+2022-08-13,Mbak Endang,Reseller Kiloan,Campur,1.5,kg,45000,67500,Lunas
+2022-08-14,Bu Marmi,Reseller Kiloan,Campur,3,kg,45000,135000,Lunas
+2022-08-19,Bu Siti,Reseller Kiloan,Gurih,1.5,kg,45000,67500,Lunas
+2022-08-20,Wong Becok,Reseller Kiloan,Gurih,1.5,kg,45000,67500,Lunas
+2022-08-22,Toko Teseh,Toko Oleh-oleh,Manis,20,pcs,4500,90000,Lunas
+2022-08-24,Mbak Ria,Reseller Kiloan,Manis,2,kg,45000,90000,Lunas
+2022-08-28,Kios Wisata Sarangan,Rest Area / Wisata,Campur,30,pcs,5000,150000,Lunas
+2022-08-29,Mbak Titik,Reseller Kiloan,Manis,1.5,kg,45000,67500,Lunas
+2022-09-01,Toko Teseh,Toko Oleh-oleh,Gurih,15,pcs,4500,67500,Lunas
+2022-09-04,Toko Barokah Maospati,Toko Oleh-oleh,Campur,20,pcs,4500,90000,Lunas
+2022-09-06,Kios Wisata Sarangan,Rest Area / Wisata,Gurih,25,pcs,5000,125000,Lunas
+2022-09-08,Mbak Linda,Reseller Kiloan,Campur,2,kg,45000,90000,Lunas
+2022-09-14,Bu Endang,Reseller Kiloan,Manis,1.5,kg,45000,67500,Lunas
+2022-09-15,Mbak Titik,Reseller Kiloan,Manis,2,kg,45000,90000,Lunas
+2022-09-17,Mas Wahyu,Reseller Kiloan,Campur,2,kg,45000,90000,Lunas
+2022-09-21,Bu Endang,Reseller Kiloan,Manis,3,kg,45000,135000,Lunas
+2022-09-23,Toko Barokah Maospati,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2022-09-25,Toko Indah,Toko Oleh-oleh,Manis,20,pcs,4500,90000,Lunas
+2022-09-27,Toko Rais,Toko Oleh-oleh,Gurih,15,pcs,4500,67500,Lunas
+2022-10-02,Mbak Dina,Reseller Kiloan,Campur,3,kg,45000,135000,Lunas
+2022-10-03,Toko Tanjung,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas
+2022-10-07,Rest Area KM 597,Rest Area / Wisata,Gurih,25,pcs,5000,125000,Lunas
+2022-10-11,Mbak Linda,Reseller Kiloan,Campur,2.5,kg,45000,112500,Lunas
+2022-10-14,Rest Area KM 597,Rest Area / Wisata,Campur,25,pcs,5000,125000,Lunas
+2022-10-15,Toko Karasan,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas
+2022-10-18,Mbak Endang,Reseller Kiloan,Manis,3,kg,45000,135000,Lunas
+2022-10-23,Toko Barokah Maospati,Toko Oleh-oleh,Gurih,20,pcs,4500,90000,Lunas
+2022-10-27,Cak Slamet,Reseller Kiloan,Manis,2.5,kg,45000,112500,Lunas
+2022-10-28,Mbak Antik,Reseller Kiloan,Gurih,3,kg,45000,135000,Lunas
+2022-10-30,Toko Barokah Maospati,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2022-11-03,Toko Madura,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas
+2022-11-07,Mbak Endang,Reseller Kiloan,Campur,1,kg,45000,45000,Lunas
+2022-11-09,Wong Becok,Reseller Kiloan,Gurih,1,kg,45000,45000,Lunas
+2022-11-11,Wong Becok,Reseller Kiloan,Gurih,2,kg,45000,90000,Lunas
+2022-11-13,Mbok Jari,Reseller Kiloan,Gurih,2,kg,45000,90000,Lunas
+2022-11-14,Mbak Endang,Reseller Kiloan,Manis,1.5,kg,45000,67500,Lunas
+2022-11-15,Mbak Linda,Reseller Kiloan,Campur,1,kg,45000,45000,Lunas
+2022-11-16,Bu Tutik,Reseller Kiloan,Manis,1,kg,45000,45000,Lunas
+2022-11-23,Cak Slamet,Reseller Kiloan,Manis,2.5,kg,45000,112500,Lunas
+2022-11-26,Mbak Dina,Reseller Kiloan,Manis,3,kg,45000,135000,Lunas
+2022-11-29,Toko Teseh,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2022-11-30,Kios Wisata Sarangan,Rest Area / Wisata,Campur,30,pcs,5000,150000,Lunas
+2022-12-01,Kios Wisata Sarangan,Rest Area / Wisata,Gurih,50,pcs,5000,250000,Lunas
+2022-12-03,Toko Ririn,Toko Oleh-oleh,Campur,25,pcs,4500,112500,Lunas
+2022-12-04,Cak Slamet,Reseller Kiloan,Campur,2,kg,45000,90000,Lunas
+2022-12-11,Toko Butun,Toko Oleh-oleh,Manis,20,pcs,4500,90000,Lunas
+2022-12-12,Mbak Ria,Reseller Kiloan,Manis,2,kg,45000,90000,Lunas
+2022-12-14,Toko Barokah Maospati,Toko Oleh-oleh,Campur,30,pcs,4500,135000,Lunas
+2022-12-16,Toko Sarangan Asri,Toko Oleh-oleh,Manis,20,pcs,4500,90000,Lunas
+2022-12-17,Toko Manjung,Toko Oleh-oleh,Manis,25,pcs,4500,112500,Lunas
+2022-12-18,Toko Butun,Toko Oleh-oleh,Campur,10,pcs,4500,45000,Lunas
+2022-12-21,Wong Becok,Reseller Kiloan,Gurih,1.5,kg,45000,67500,Lunas
+2022-12-22,Mbak Titik,Reseller Kiloan,Campur,1.5,kg,45000,67500,Lunas
+2022-12-24,Mbak Mika,Reseller Kiloan,Campur,2,kg,45000,90000,Lunas
+2022-12-29,Toko Karasan,Toko Oleh-oleh,Gurih,25,pcs,4500,112500,Lunas
+2022-12-31,Toko Teseh,Toko Oleh-oleh,Manis,25,pcs,4500,112500,Lunas
+2023-01-09,Toko Asi,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas
+2023-01-10,Mbak Endang,Reseller Kiloan,Campur,1.5,kg,50000,75000,Lunas
+2023-01-11,Toko Sarangan Asri,Toko Oleh-oleh,Manis,20,pcs,4500,90000,Lunas
+2023-01-12,Kios Wisata Sarangan,Rest Area / Wisata,Manis,25,pcs,5000,125000,Lunas
+2023-01-14,Rest Area,Rest Area / Wisata,Gurih,20,pcs,5000,100000,Lunas
+2023-01-15,Toko Bakur,Toko Oleh-oleh,Gurih,20,pcs,4500,90000,Lunas
+2023-01-17,Toko Madura,Toko Oleh-oleh,Gurih,20,pcs,4500,90000,Lunas
+2023-01-18,Toko Rais,Toko Oleh-oleh,Campur,15,pcs,4500,67500,Lunas
+2023-01-21,Toko Karasan,Toko Oleh-oleh,Campur,10,pcs,4500,45000,Lunas
+2023-01-23,Toko Barokah Maospati,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas
+2023-01-24,Rest Area KM 597,Rest Area / Wisata,Gurih,20,pcs,5000,100000,Lunas
+2023-01-29,Mbak Dina,Reseller Kiloan,Manis,1,kg,50000,50000,Lunas
+2023-01-31,Mbak Mika,Reseller Kiloan,Gurih,1.5,kg,50000,75000,Lunas
+2023-02-03,Toko Barokah Maospati,Toko Oleh-oleh,Manis,20,pcs,4500,90000,Lunas
+2023-02-04,Rest Area KM 597,Rest Area / Wisata,Manis,30,pcs,5000,150000,Lunas
+2023-02-08,Toko Azla,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2023-02-10,Toko Yuli,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2023-02-14,Toko Yuli,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2023-02-17,Toko Sarangan Asri,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas
+2023-02-18,Toko Bakur,Toko Oleh-oleh,Campur,15,pcs,4500,67500,Lunas
+2023-02-19,Toko Teseh,Toko Oleh-oleh,Manis,20,pcs,4500,90000,Lunas
+2023-02-20,Cak Slamet,Reseller Kiloan,Gurih,2,kg,50000,100000,Lunas
+2023-02-24,Toko Teseh,Toko Oleh-oleh,Campur,10,pcs,4500,45000,Lunas
+2023-02-26,Rest Area,Rest Area / Wisata,Campur,20,pcs,5000,100000,Lunas
+2023-03-01,Kios Wisata Sarangan,Rest Area / Wisata,Gurih,30,pcs,5000,150000,Lunas
+2023-03-02,Toko Yuli,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2023-03-04,Kios Wisata Sarangan,Rest Area / Wisata,Gurih,30,pcs,5000,150000,Lunas
+2023-03-09,Toko Ririn,Toko Oleh-oleh,Manis,30,pcs,4500,135000,Lunas
+2023-03-10,Rest Area,Rest Area / Wisata,Manis,25,pcs,5000,125000,Lunas
+2023-03-13,Mbak Titik,Reseller Kiloan,Gurih,4,kg,50000,200000,Lunas
+2023-03-15,Toko Indah,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas
+2023-03-16,Rest Area KM 597,Rest Area / Wisata,Gurih,30,pcs,5000,150000,Lunas
+2023-03-17,Toko Tanjung,Toko Oleh-oleh,Campur,10,pcs,4500,45000,Lunas
+2023-03-19,Toko Indah,Toko Oleh-oleh,Manis,25,pcs,4500,112500,Lunas
+2023-03-20,Toko Tanjung,Toko Oleh-oleh,Campur,10,pcs,4500,45000,Lunas
+2023-03-21,Bu Endang,Reseller Kiloan,Manis,4,kg,50000,200000,Lunas
+2023-03-22,Toko Manjung,Toko Oleh-oleh,Campur,30,pcs,4500,135000,Lunas
+2023-03-24,Mbak Endang,Reseller Kiloan,Gurih,2.5,kg,50000,125000,Lunas
+2023-03-25,Toko Rais,Toko Oleh-oleh,Manis,30,pcs,4500,135000,Lunas
+2023-03-26,Rest Area KM 597,Rest Area / Wisata,Campur,20,pcs,5000,100000,Lunas
+2023-03-27,Kios Wisata Sarangan,Rest Area / Wisata,Campur,30,pcs,5000,150000,Lunas
+2023-03-28,Toko Karasan,Toko Oleh-oleh,Campur,30,pcs,4500,135000,Lunas
+2023-03-30,Toko Azla,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas
+2023-04-04,Toko Karasan,Toko Oleh-oleh,Campur,10,pcs,4500,45000,Lunas
+2023-04-04,Toko Yuli,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2023-04-04,Toko Azla,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas
+2023-04-10,Mbak Antik,Reseller Kiloan,Gurih,2,kg,50000,100000,Lunas
+2023-04-10,Mbak Ria,Reseller Kiloan,Manis,1,kg,50000,50000,Lunas
+2023-04-16,Bu Tutik,Reseller Kiloan,Campur,1.5,kg,50000,75000,Lunas
+2023-04-16,Wong Becok,Reseller Kiloan,Gurih,1,kg,50000,50000,Lunas
+2023-04-16,Bu Marmi,Reseller Kiloan,Manis,2,kg,50000,100000,Lunas
+2023-04-16,Bu Siti,Reseller Kiloan,Gurih,2,kg,50000,100000,Lunas
+2023-04-18,Mbak Dina,Reseller Kiloan,Manis,2,kg,50000,100000,Lunas
+2023-04-18,Rest Area,Rest Area / Wisata,Campur,20,pcs,5000,100000,Lunas
+2023-04-21,Mbak Titik,Reseller Kiloan,Gurih,2,kg,50000,100000,Lunas
+2023-04-23,Toko Madura,Toko Oleh-oleh,Campur,10,pcs,4500,45000,Lunas
+2023-04-23,Toko Rais,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2023-04-27,Toko Ririn,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas
+2023-04-27,Toko Asi,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2023-05-08,Toko Rais,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas
+2023-05-09,Kios Wisata Sarangan,Rest Area / Wisata,Manis,20,pcs,5000,100000,Lunas
+2023-05-10,Rest Area KM 597,Rest Area / Wisata,Gurih,25,pcs,5000,125000,Lunas
+2023-05-14,Kios Wisata Sarangan,Rest Area / Wisata,Gurih,20,pcs,5000,100000,Lunas
+2023-05-16,Toko Bakur,Toko Oleh-oleh,Campur,20,pcs,4500,90000,Lunas
+2023-05-17,Rest Area KM 597,Rest Area / Wisata,Campur,25,pcs,5000,125000,Lunas
+2023-05-23,Bu Siti,Reseller Kiloan,Manis,2.5,kg,50000,125000,Lunas
+2023-05-26,Mbak Dina,Reseller Kiloan,Manis,2,kg,50000,100000,Lunas
+2023-05-29,Kios Wisata Sarangan,Rest Area / Wisata,Campur,30,pcs,5000,150000,Lunas
+2023-05-30,Toko Becok,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2023-05-31,Mbak Linda,Reseller Kiloan,Manis,2,kg,50000,100000,Lunas
+2023-06-01,Toko Butun,Toko Oleh-oleh,Manis,30,pcs,4500,135000,Lunas
+2023-06-02,Mas Wahyu,Reseller Kiloan,Manis,3,kg,50000,150000,Lunas
+2023-06-04,Rest Area KM 597,Rest Area / Wisata,Gurih,50,pcs,5000,250000,Lunas
+2023-06-05,Mbak Endang,Reseller Kiloan,Manis,2.5,kg,50000,125000,Lunas
+2023-06-11,Toko Yuli,Toko Oleh-oleh,Gurih,25,pcs,4500,112500,Lunas
+2023-06-14,Kios Wisata Sarangan,Rest Area / Wisata,Campur,40,pcs,5000,200000,Lunas
+2023-06-15,Kios Wisata Sarangan,Rest Area / Wisata,Manis,30,pcs,5000,150000,Lunas
+2023-06-16,Toko Bakur,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2023-06-17,Toko Madura,Toko Oleh-oleh,Manis,25,pcs,4500,112500,Lunas
+2023-06-18,Toko Rais,Toko Oleh-oleh,Gurih,30,pcs,4500,135000,Lunas
+2023-06-19,Mbak Endang,Reseller Kiloan,Gurih,1.5,kg,50000,75000,Lunas
+2023-06-23,Toko Tanjung,Toko Oleh-oleh,Campur,20,pcs,4500,90000,Lunas
+2023-06-24,Toko Rais,Toko Oleh-oleh,Gurih,30,pcs,4500,135000,Lunas
+2023-06-27,Mbak Titik,Reseller Kiloan,Manis,3,kg,50000,150000,Lunas
+2023-06-28,Toko Barokah Maospati,Toko Oleh-oleh,Manis,20,pcs,4500,90000,Lunas
+2023-07-04,Toko Manjung,Toko Oleh-oleh,Campur,25,pcs,4500,112500,Lunas
+2023-07-07,Rest Area KM 597,Rest Area / Wisata,Campur,50,pcs,5000,250000,Lunas
+2023-07-09,Toko Karasan,Toko Oleh-oleh,Campur,10,pcs,4500,45000,Lunas
+2023-07-10,Kios Wisata Sarangan,Rest Area / Wisata,Gurih,40,pcs,5000,200000,Lunas
+2023-07-12,Wong Becok,Reseller Kiloan,Campur,2,kg,50000,100000,Lunas
+2023-07-13,Toko Asi,Toko Oleh-oleh,Campur,25,pcs,4500,112500,Lunas
+2023-07-14,Mbak Linda,Reseller Kiloan,Campur,3,kg,50000,150000,Lunas
+2023-07-15,Mbak Mika,Reseller Kiloan,Gurih,3,kg,50000,150000,Lunas
+2023-07-16,Bu Marmi,Reseller Kiloan,Manis,1,kg,50000,50000,Lunas
+2023-07-19,Mbak Linda,Reseller Kiloan,Gurih,1,kg,50000,50000,Lunas
+2023-07-21,Rest Area KM 597,Rest Area / Wisata,Manis,40,pcs,5000,200000,Lunas
+2023-07-23,Toko Rais,Toko Oleh-oleh,Campur,25,pcs,4500,112500,Lunas
+2023-07-28,Cak Slamet,Reseller Kiloan,Manis,1.5,kg,50000,75000,Lunas
+2023-07-31,Toko Sarangan Asri,Toko Oleh-oleh,Manis,25,pcs,4500,112500,Lunas
+2023-08-03,Toko Tanjung,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2023-08-05,Mbak Titik,Reseller Kiloan,Manis,3,kg,50000,150000,Lunas
+2023-08-08,Bu Marmi,Reseller Kiloan,Campur,2,kg,50000,100000,Lunas
+2023-08-13,Bu Siti,Reseller Kiloan,Gurih,3,kg,50000,150000,Lunas
+2023-08-15,Toko Karasan,Toko Oleh-oleh,Campur,20,pcs,4500,90000,Lunas
+2023-08-18,Toko Teseh,Toko Oleh-oleh,Campur,10,pcs,4500,45000,Lunas
+2023-08-22,Mbak Titik,Reseller Kiloan,Campur,2,kg,50000,100000,Lunas
+2023-08-24,Mbak Ria,Reseller Kiloan,Gurih,1,kg,50000,50000,Lunas
+2023-08-25,Rest Area KM 597,Rest Area / Wisata,Gurih,20,pcs,5000,100000,Lunas
+2023-08-26,Toko Rais,Toko Oleh-oleh,Manis,15,pcs,4500,67500,Lunas
+2023-09-04,Bu Marmi,Reseller Kiloan,Gurih,3,kg,50000,150000,Lunas
+2023-09-05,Toko Barokah Maospati,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas
+2023-09-14,Rest Area,Rest Area / Wisata,Manis,25,pcs,5000,125000,Lunas
+2023-09-16,Mbak Mika,Reseller Kiloan,Manis,1,kg,50000,50000,Lunas
+2023-09-18,Toko Asi,Toko Oleh-oleh,Gurih,15,pcs,4500,67500,Lunas
+2023-09-19,Toko Asi,Toko Oleh-oleh,Campur,20,pcs,4500,90000,Lunas
+2023-09-21,Rest Area,Rest Area / Wisata,Gurih,20,pcs,5000,100000,Lunas
+2023-09-22,Kios Wisata Sarangan,Rest Area / Wisata,Campur,20,pcs,5000,100000,Lunas
+2023-09-23,Bu Endang,Reseller Kiloan,Gurih,2.5,kg,50000,125000,Lunas
+2023-09-24,Toko Teseh,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas
+2023-09-26,Mbok Jari,Reseller Kiloan,Gurih,2,kg,50000,100000,Lunas
+2023-09-29,Rest Area,Rest Area / Wisata,Campur,30,pcs,5000,150000,Lunas
+2023-10-01,Toko Madura,Toko Oleh-oleh,Gurih,15,pcs,4500,67500,Lunas
+2023-10-04,Mbak Linda,Reseller Kiloan,Gurih,2,kg,50000,100000,Lunas
+2023-10-05,Toko Manjung,Toko Oleh-oleh,Campur,20,pcs,4500,90000,Lunas
+2023-10-06,Toko Teseh,Toko Oleh-oleh,Campur,10,pcs,4500,45000,Lunas
+2023-10-08,Cak Slamet,Reseller Kiloan,Campur,2.5,kg,50000,125000,Lunas
+2023-10-11,Toko Karasan,Toko Oleh-oleh,Gurih,15,pcs,4500,67500,Lunas
+2023-10-12,Mbak Dina,Reseller Kiloan,Campur,1,kg,50000,50000,Lunas
+2023-10-19,Toko Barokah Maospati,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2023-10-22,Toko Rais,Toko Oleh-oleh,Gurih,10,pcs,4500,45000,Lunas
+2023-10-25,Toko Indah,Toko Oleh-oleh,Manis,20,pcs,4500,90000,Lunas
+2023-10-26,Mbak Titik,Reseller Kiloan,Campur,2.5,kg,50000,125000,Lunas
+2023-10-27,Toko Azla,Toko Oleh-oleh,Campur,20,pcs,4500,90000,Lunas
+2023-11-04,Toko Butun,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas
+2023-11-08,Mbak Titik,Reseller Kiloan,Gurih,1,kg,50000,50000,Lunas
+2023-11-11,Mbak Ria,Reseller Kiloan,Manis,1,kg,50000,50000,Lunas
+2023-11-13,Bu Siti,Reseller Kiloan,Gurih,2.5,kg,50000,125000,Lunas
+2023-11-14,Toko Indah,Toko Oleh-oleh,Campur,10,pcs,4500,45000,Lunas
+2023-11-15,Toko Becok,Toko Oleh-oleh,Campur,10,pcs,4500,45000,Lunas
+2023-11-23,Kios Wisata Sarangan,Rest Area / Wisata,Gurih,25,pcs,5000,125000,Lunas
+2023-11-26,Toko Asi,Toko Oleh-oleh,Gurih,15,pcs,4500,67500,Lunas
+2023-11-27,Toko Azla,Toko Oleh-oleh,Manis,20,pcs,4500,90000,Lunas
+2023-11-29,Toko Butun,Toko Oleh-oleh,Campur,10,pcs,4500,45000,Lunas
+2023-11-30,Mas Wahyu,Reseller Kiloan,Campur,2.5,kg,50000,125000,Lunas
+2023-12-01,Mbak Dina,Reseller Kiloan,Gurih,1.5,kg,50000,75000,Lunas
+2023-12-03,Mbak Antik,Reseller Kiloan,Gurih,3,kg,50000,150000,Lunas
+2023-12-06,Mbak Dina,Reseller Kiloan,Manis,2,kg,50000,100000,Lunas
+2023-12-09,Toko Manjung,Toko Oleh-oleh,Manis,25,pcs,4500,112500,Lunas
+2023-12-10,Mbok Jari,Reseller Kiloan,Campur,1,kg,50000,50000,Lunas
+2023-12-11,Rest Area,Rest Area / Wisata,Campur,50,pcs,5000,250000,Lunas
+2023-12-12,Toko Yuli,Toko Oleh-oleh,Manis,30,pcs,4500,135000,Lunas
+2023-12-14,Mbak Titik,Reseller Kiloan,Campur,2,kg,50000,100000,Lunas
+2023-12-18,Toko Asi,Toko Oleh-oleh,Campur,10,pcs,4500,45000,Lunas
+2023-12-20,Toko Azla,Toko Oleh-oleh,Manis,30,pcs,4500,135000,Lunas
+2023-12-21,Bu Marmi,Reseller Kiloan,Gurih,1.5,kg,50000,75000,Lunas
+2023-12-22,Toko Madura,Toko Oleh-oleh,Gurih,20,pcs,4500,90000,Lunas
+2023-12-23,Toko Asi,Toko Oleh-oleh,Gurih,25,pcs,4500,112500,Lunas
+2023-12-24,Toko Azla,Toko Oleh-oleh,Gurih,30,pcs,4500,135000,Lunas
+2023-12-25,Bu Tutik,Reseller Kiloan,Gurih,2,kg,50000,100000,Lunas
+2023-12-26,Wong Becok,Reseller Kiloan,Campur,2.5,kg,50000,125000,Lunas
+2023-12-28,Mbak Endang,Reseller Kiloan,Manis,1,kg,50000,50000,Lunas
+2023-12-31,Toko Madura,Toko Oleh-oleh,Manis,10,pcs,4500,45000,Lunas

@@ -861,38 +861,7 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Inovasi 3: Generator Format Pesan WhatsApp & Konfirmasi Pengiriman -->
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
-                                <i class="fa-brands fa-whatsapp text-xl"></i>
-                            </div>
-                            <div>
-                                <h3 class="font-display font-bold text-slate-900 text-base">Generator Format Pesan Tagihan & Kiriman WhatsApp</h3>
-                                <p class="text-xs text-slate-500">Kirim konfirmasi pengiriman barang ke toko oleh-oleh atau reseller via WA dalam sekali klik</p>
-                            </div>
-                        </div>
-                        <button onclick="copyGeneratedWhatsAppText()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-2 self-start sm:self-auto cursor-pointer">
-                            <i class="fa-regular fa-copy"></i> Salin Pesan WA
-                        </button>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Pilih Transaksi Terkini:</label>
-                            <select id="wa-select-transaction" onchange="generateWhatsAppMessage()" class="w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl">
-                                <!-- Diisi dinamis -->
-                            </select>
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Preview Format Pesan:</label>
-                            <textarea id="wa-preview-text" rows="4" readonly class="w-full p-3 text-xs font-mono bg-slate-50 border border-slate-200 rounded-xl text-slate-800 leading-relaxed"></textarea>
-                        </div>
-                    </div>
-                </div>
-            </section>
+</section>
 
         </main>
     </div>
@@ -5522,7 +5491,6 @@
             filterSalesTable();
             renderProductionTable();
             renderInventoryCards();
-            populateWhatsAppSelect();
         }
 
         function formatRupiah(num) {
@@ -6457,55 +6425,6 @@
             document.getElementById('hpp-profit-pcs').textContent = `${formatRupiah(profitPcs)} (${marginPct}%)`;
         }
 
-        // =====================================================================
-        // GENERATOR NOTA & PESAN WHATSAPP
-        // =====================================================================
-        function populateWhatsAppSelect() {
-            const select = document.getElementById('wa-select-transaction');
-            if (!select) return;
-            select.innerHTML = '';
-            salesData.slice(0, 15).forEach((item, idx) => {
-                const opt = document.createElement('option');
-                opt.value = idx;
-                opt.textContent = `${item.tanggal} - ${item.mitra} (${item.jumlah} ${item.satuan} - ${formatRupiah(item.total)})`;
-                select.appendChild(opt);
-            });
-            generateWhatsAppMessage();
-        }
-
-        function generateWhatsAppMessage() {
-            const select = document.getElementById('wa-select-transaction');
-            const preview = document.getElementById('wa-preview-text');
-            if (!select || !preview) return;
-
-            const idx = parseInt(select.value) || 0;
-            const item = salesData[idx] || salesData[0];
-            if (!item) return;
-
-            const text = 
-`*KONFIRMASI PENGIRIMAN KERIPIK PISANG BANAHO*
-Halo Yth. *${item.mitra}*,
-Berikut rincian pesanan oleh-oleh khas Magetan Anda:
-
-• Tanggal: ${item.tanggal}
-• Varian: Keripik Pisang Banaho (${item.varian})
-• Jumlah: ${item.jumlah} ${item.satuan}
-• Harga Satuan: ${formatRupiah(item.hargaSatuan)}
-• *Total Pembayaran: ${formatRupiah(item.total)}*
-• Status: ${item.status}
-
-Pesanan siap dikirim/diantar. Terima kasih atas kerja samanya bersama Banaho Magetan! 🙏🍌`;
-
-            preview.value = text;
-        }
-
-        function copyGeneratedWhatsAppText() {
-            const preview = document.getElementById('wa-preview-text');
-            preview.select();
-            document.execCommand('copy');
-            showToast("Teks konfirmasi WhatsApp berhasil disalin!", "success");
-        }
-
         function showInvoiceForSale(index) {
             const item = salesData[index];
             if (!item) return;
@@ -6558,7 +6477,7 @@ Pesanan siap dikirim/diantar. Terima kasih atas kerja samanya bersama Banaho Mag
                 penjualan: ["Rekap Penjualan & Reseller", "Catatan lengkap transaksi mitra toko oleh-oleh (80g) dan reseller curah (Kg)."],
                 produksi: ["Pencatatan Produksi", "Catatan penggorengan pisang kepok mentah, hasil rendemen, dan stempel kedaluwarsa."],
                 persediaan: ["Stok & Persediaan", "Kontrol produk jadi, kemasan standing pouch hijau/biru, dan bahan baku dapur."],
-                inovasi: ["Kalkulator HPP & Rendemen", "Alat bantu hitung kebutuhan pisang kepok mentah, simulasi margin, dan nota WhatsApp."]
+                inovasi: ["Kalkulator HPP & Rendemen", "Alat bantu hitung kebutuhan pisang kepok mentah dan simulasi margin keuntungan."]
             };
 
             if (titles[tabName]) {

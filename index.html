@@ -353,11 +353,17 @@
                         <span id="network-status-label">Online</span>
                     </div>
 
-                    <!-- Tombol Antrean Sinkronisasi Offline -->
-                    <button id="offline-queue-btn" onclick="openSyncQueueModal()" class="hidden items-center gap-2 px-3 py-2 rounded-xl border text-xs font-bold bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100 transition shadow-2xs cursor-pointer animate-pulse">
-                        <i class="fa-solid fa-cloud-arrow-up text-amber-600"></i>
-                        <span id="offline-queue-label">0 Antrean Offline</span>
-                    </button>
+                    <!-- Tombol Antrean Sinkronisasi Offline & Tombol Sinkronkan Sekarang -->
+                    <div id="offline-queue-container" class="hidden items-center gap-1.5">
+                        <button id="offline-queue-btn" onclick="openSyncQueueModal()" class="flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-bold bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100 transition shadow-2xs cursor-pointer animate-pulse" title="Klik untuk melihat detail antrean offline">
+                            <i class="fa-solid fa-cloud-arrow-up text-amber-600"></i>
+                            <span id="offline-queue-label">0 Antrean Offline</span>
+                        </button>
+                        <button id="btn-manual-sync-now" onclick="triggerManualSync()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-sm cursor-pointer" title="Kirim data offline ke Google Sheet sekarang">
+                            <i id="btn-manual-sync-icon" class="fa-solid fa-rotate"></i>
+                            <span id="btn-manual-sync-label">Sinkronkan Sekarang</span>
+                        </button>
+                    </div>
 
                     <button onclick="openQuickAddModal('penjualan')" class="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-amber-950 font-semibold text-sm shadow-sm shadow-amber-200 flex items-center gap-2 transition cursor-pointer">
                         <i class="fa-solid fa-plus"></i> + Catat Penjualan
@@ -570,7 +576,8 @@
                                     <th class="py-3.5 px-4 text-right">Volume</th>
                                     <th class="py-3.5 px-4 text-right">Harga Satuan</th>
                                     <th class="py-3.5 px-4 text-right">Total Transaksi</th>
-                                    <th class="py-3.5 px-4 text-center">Status</th>
+                                    <th class="py-3.5 px-4 text-center">Pembayaran</th>
+                                    <th class="py-3.5 px-4 text-center">Sinkronisasi</th>
                                     <th class="py-3.5 px-4 text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -1001,6 +1008,14 @@
                         <label class="block text-xs font-semibold text-slate-700 mb-1">Harga Satuan (Rp)</label>
                         <input type="number" id="add-harga" value="4500" required class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl">
                     </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Status Pembayaran</label>
+                    <select id="add-status-bayar" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl">
+                        <option value="Lunas" selected>Lunas (Diterima)</option>
+                        <option value="Belum Lunas">Belum Lunas (Tempo / Konsinyasi)</option>
+                    </select>
                 </div>
 
                 <div class="pt-3 flex justify-end gap-2 border-t border-slate-100">
@@ -5047,9 +5062,13 @@
         // SISTEM INPUT & SINKRONISASI ONLINE - OFFLINE (JAMSTACK ARCHITECTURE)
         // =====================================================================
         let offlineQueue = [];
+        let isSyncing = false;
+        let syncRetryTimer = null;
+        let syncRetryCount = 0;
+        const MAX_SYNC_RETRIES = 3;
 
         function initOfflineSystem() {
-            // Load saved offline queue from localStorage
+            // Muat saved offline queue dari localStorage
             const savedQueue = localStorage.getItem('banaho_offline_queue');
             if (savedQueue) {
                 try {
@@ -5059,9 +5078,29 @@
                 }
             }
 
+            // Pastikan setiap transaksi lokal memiliki ID unik & syncStatus
+            salesData.forEach((item, idx) => {
+                if (!item.id) {
+                    item.id = "TRX-INIT-" + idx + "-" + (item.tanggal ? item.tanggal.replace(/[^0-9]/g, '') : '00');
+                }
+                if (!item.syncStatus) {
+                    item.syncStatus = item.isOffline ? 'Menunggu' : 'Tersinkron';
+                }
+            });
+
             // Daftarkan listener koneksi jaringan
-            window.addEventListener('online', () => handleNetworkChange(true));
-            window.addEventListener('offline', () => handleNetworkChange(false));
+            window.addEventListener('online', () => {
+                handleNetworkChange(true);
+                // Saat koneksi kembali online, picu sinkronisasi otomatis
+                triggerAutoSyncOnOnline();
+            });
+            window.addEventListener('offline', () => {
+                handleNetworkChange(false);
+                if (syncRetryTimer) {
+                    clearTimeout(syncRetryTimer);
+                    syncRetryTimer = null;
+                }
+            });
 
             // Jalankan pengecekan status saat ini
             handleNetworkChange(navigator.onLine);
@@ -5072,6 +5111,23 @@
                 navigator.serviceWorker.register('./sw.js').catch(err => {
                     console.warn('Service worker registration note:', err);
                 });
+            }
+
+            // Saat halaman pertama kali dimuat, jika online & ada antrean, langsung kirim otomatis
+            if (navigator.onLine && offlineQueue.length > 0) {
+                setTimeout(() => {
+                    processOfflineQueueAuto(false);
+                }, 1200);
+            }
+        }
+
+        function triggerAutoSyncOnOnline() {
+            if (offlineQueue.length > 0) {
+                showToast(`Koneksi internet kembali! Memulai sinkronisasi otomatis ${offlineQueue.length} data antrean...`, "info");
+                syncRetryCount = 0;
+                processOfflineQueueAuto(true);
+            } else {
+                showToast("Koneksi internet terhubung kembali (Online).", "success");
             }
         }
 
@@ -5099,11 +5155,6 @@
                     modalIcon.className = "fa-solid fa-wifi text-emerald-600";
                     modalMsg.innerHTML = "<strong>Mode Online:</strong> Terhubung ke internet. Data siap disinkronkan ke cloud.";
                 }
-
-                // Jika terhubung kembali dan ada antrean offline
-                if (offlineQueue.length > 0) {
-                    showToast(`Koneksi internet aktif! Terdapat ${offlineQueue.length} data offline siap disinkronkan.`, "info");
-                }
             } else {
                 if (statusPill) {
                     statusPill.className = "flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold bg-rose-50 text-rose-800 border-rose-200 shadow-2xs transition-all";
@@ -5117,44 +5168,36 @@
                 if (modalBanner) {
                     modalBanner.className = "p-2.5 mb-3 rounded-xl bg-amber-50 border border-amber-300 text-xs text-amber-900 flex items-center gap-2";
                     modalIcon.className = "fa-solid fa-plane text-amber-600";
-                    modalMsg.innerHTML = "<strong>Mode Offline:</strong> Tidak ada internet. Data akan disimpan aman di perangkat Anda.";
+                    modalMsg.innerHTML = "<strong>Mode Offline:</strong> Tidak ada internet. Data akan disimpan aman di perangkat dan otomatis disinkronkan begitu online.";
                 }
-                showToast("Anda dalam Mode Offline. Semua pencatatan tetap dapat dilakukan dan tersimpan aman di perangkat.", "warning");
-            }
-
-            const queueStatConn = document.getElementById('queue-stat-conn');
-            if (queueStatConn) {
-                queueStatConn.innerHTML = isOnline 
-                    ? `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> Online` 
-                    : `<span class="w-2 h-2 rounded-full bg-rose-500"></span> Offline`;
             }
         }
 
         function updateOfflineQueueUI() {
             const count = offlineQueue.length;
+            const queueContainer = document.getElementById('offline-queue-container');
             const queueBtn = document.getElementById('offline-queue-btn');
             const queueLabel = document.getElementById('offline-queue-label');
-            const sidebarQueueBox = document.getElementById('sidebar-queue-box');
-            const sidebarQueueCount = document.getElementById('sidebar-queue-count');
+            const sidebarBox = document.getElementById('sidebar-queue-box');
+            const sidebarCount = document.getElementById('sidebar-queue-count');
 
             if (count > 0) {
-                if (queueBtn) {
-                    queueBtn.classList.remove('hidden');
-                    queueBtn.classList.add('flex');
-                    queueLabel.textContent = `${count} Antrean Offline`;
+                if (queueContainer) {
+                    queueContainer.classList.remove('hidden');
+                    queueContainer.classList.add('flex');
                 }
-                if (sidebarQueueBox) {
-                    sidebarQueueBox.classList.remove('hidden');
-                    sidebarQueueCount.textContent = `${count} Data`;
-                }
+                if (queueBtn) queueBtn.classList.remove('hidden');
+                if (queueLabel) queueLabel.textContent = `${count} Antrean Offline`;
+                
+                if (sidebarBox) sidebarBox.classList.remove('hidden');
+                if (sidebarCount) sidebarCount.textContent = `${count} Data`;
             } else {
-                if (queueBtn) {
-                    queueBtn.classList.add('hidden');
-                    queueBtn.classList.remove('flex');
+                if (queueContainer) {
+                    queueContainer.classList.add('hidden');
+                    queueContainer.classList.remove('flex');
                 }
-                if (sidebarQueueBox) {
-                    sidebarQueueBox.classList.add('hidden');
-                }
+                if (queueBtn) queueBtn.classList.add('hidden');
+                if (sidebarBox) sidebarBox.classList.add('hidden');
             }
 
             // Update isi tabel modal antrean
@@ -5165,18 +5208,19 @@
             const tbody = document.getElementById('sync-queue-table-body');
             const statCount = document.getElementById('queue-stat-count');
             const statRp = document.getElementById('queue-stat-rp');
+            const statConn = document.getElementById('queue-stat-conn');
             if (!tbody) return;
 
             tbody.innerHTML = '';
             let totalRp = 0;
 
             if (offlineQueue.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-400">Tidak ada data offline dalam antrean. Semua data sinkron!</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-400">Tidak ada data offline dalam antrean. Semua data sudah tersinkronkan!</td></tr>`;
             } else {
                 offlineQueue.forEach((item, idx) => {
                     totalRp += (item.data.total || 0);
                     const tgl = item.data.tanggal || item.timestamp.slice(0, 10);
-                    const rincian = item.type === 'penjualan' ? item.data.mitra : (item.data.kodeBatch || item.data.nama);
+                    const rincian = item.type === 'penjualan' ? item.data.mitra : (item.data.kodeBatch || item.data.nama || '-');
                     const vol = item.data.jumlah ? `${item.data.jumlah} ${item.data.satuan}` : '-';
                     const rp = item.data.total ? formatRupiah(item.data.total) : '-';
 
@@ -5188,7 +5232,9 @@
                             <td class="py-2 px-3 text-right text-slate-700">${vol}</td>
                             <td class="py-2 px-3 text-right font-bold text-amber-800">${rp}</td>
                             <td class="py-2 px-3 text-center">
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 text-amber-800">Menunggu</span>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 text-amber-800 flex items-center justify-center gap-1">
+                                    <i class="fa-solid fa-clock text-[9px]"></i> Menunggu
+                                </span>
                             </td>
                         </tr>
                     `;
@@ -5197,6 +5243,12 @@
 
             if (statCount) statCount.textContent = `${offlineQueue.length} Transaksi`;
             if (statRp) statRp.textContent = formatRupiah(totalRp);
+            if (statConn) {
+                statConn.innerHTML = navigator.onLine 
+                    ? `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Online` 
+                    : `<span class="w-2 h-2 rounded-full bg-rose-500"></span> Offline`;
+                statConn.className = `font-display font-extrabold text-xl mt-0.5 flex items-center gap-1.5 ${navigator.onLine ? 'text-emerald-800' : 'text-rose-800'}`;
+            }
         }
 
         function openSyncQueueModal() {
@@ -5210,50 +5262,170 @@
             document.getElementById('sync-queue-modal').classList.remove('flex');
         }
 
-        // Sinkronisasi via Google Apps Script Web App
-        async function syncOfflineQueueViaApi() {
+        // Pemicu manual dari tombol "Sinkronkan Sekarang"
+        function triggerManualSync() {
+            if (isSyncing) return;
+            syncRetryCount = 0;
+            processOfflineQueueAuto(true, true);
+        }
+
+        // Fungsi Sinkronisasi Utama Otomatis & Terurut
+        async function processOfflineQueueAuto(isExplicit = false, isUserManual = false) {
+            if (isSyncing) return;
+            if (offlineQueue.length === 0) {
+                if (isUserManual) showToast("Antrean offline sudah kosong. Semua data telah sinkron!", "info");
+                return;
+            }
+
             if (!navigator.onLine) {
-                showToast("Tidak dapat sinkronisasi: Anda sedang dalam mode offline. Sambungkan ke internet terlebih dahulu.", "error");
+                if (isUserManual) {
+                    showToast("Gagal: Perangkat masih offline. Sambungkan koneksi internet untuk mengirim data.", "error");
+                }
                 return;
             }
 
             const scriptUrl = (sheetConfig.googleAppsScriptUrl || "").trim();
             if (!scriptUrl) {
-                showToast("URL Google Apps Script belum dikonfigurasi. Gunakan opsi 'Salin Format Baris' atau masukkan URL di menu konfigurasi.", "warning");
-                openConfigModal();
+                if (isUserManual || isExplicit) {
+                    showToast("URL Google Apps Script belum diisi. Masukkan URL Web App di menu Konfigurasi atau gunakan 'Salin Format Baris'.", "warning");
+                    openConfigModal();
+                }
                 return;
             }
 
-            if (offlineQueue.length === 0) {
-                showToast("Antrean offline kosong.", "info");
-                return;
+            isSyncing = true;
+            setSyncLoadingState(true);
+
+            if (isUserManual) {
+                showToast(`Menghubungkan ke Google Sheets... Mengirim ${offlineQueue.length} antrean data secara berurutan.`, "info");
             }
 
-            showToast(`Mengirim ${offlineQueue.length} data ke Google Sheets...`, "info");
+            const successfullySentIds = [];
+            let hadNetworkError = false;
 
             try {
-                for (const item of offlineQueue) {
-                    if (item.type === 'penjualan') {
+                // Urutkan data berdasarkan timestamp (FIFO: paling lama dahulu)
+                const queueCopy = [...offlineQueue].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+                for (const item of queueCopy) {
+                    // Validasi ID unik
+                    if (!item.id) {
+                        item.id = "TRX-SYNC-" + Date.now() + "-" + Math.random().toString(36).substr(2, 5);
+                    }
+
+                    // Hanya kirim jika belum ditandai pernah terkirim di batch ini (cegah duplikasi)
+                    if (successfullySentIds.includes(item.id)) continue;
+
+                    try {
+                        const payload = {
+                            id: item.id,
+                            type: item.type || 'penjualan',
+                            timestamp: item.timestamp,
+                            ...item.data
+                        };
+
                         await fetch(scriptUrl, {
                             method: 'POST',
                             mode: 'no-cors',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(item.data)
+                            body: JSON.stringify(payload)
                         });
+
+                        // Beri jeda kecil agar request Google Apps Script stabil berurutan
+                        await new Promise(res => setTimeout(res, 250));
+
+                        successfullySentIds.push(item.id);
+
+                        // Perbarui status sinkronisasi item pada state salesData
+                        const targetSale = salesData.find(s => s.id === item.id);
+                        if (targetSale) {
+                            targetSale.isOffline = false;
+                            targetSale.syncStatus = 'Tersinkron';
+                        }
+                    } catch (itemErr) {
+                        console.error("Gagal mengirim item id:", item.id, itemErr);
+                        hadNetworkError = true;
+                        break; // Hentikan batch jika terjadi putus koneksi di tengah jalan
                     }
                 }
 
-                // Sukses
-                offlineQueue = [];
-                localStorage.removeItem('banaho_offline_queue');
-                updateOfflineQueueUI();
-                renderAll();
-                showToast("Berhasil! Semua data antrean offline telah dikirim dan disinkronkan ke Google Sheets.", "success");
-                closeSyncQueueModal();
+                // Hapus hanya data yang benar-benar sukses terkirim dari antrean
+                if (successfullySentIds.length > 0) {
+                    offlineQueue = offlineQueue.filter(item => !successfullySentIds.includes(item.id));
+                    localStorage.setItem('banaho_offline_queue', JSON.stringify(offlineQueue));
+                    localStorage.setItem('banaho_local_sales', JSON.stringify(salesData));
+
+                    updateOfflineQueueUI();
+                    renderAll();
+                }
+
+                if (hadNetworkError) {
+                    throw new Error("Koneksi terputus saat pengiriman antrean.");
+                }
+
+                // Jika seluruh antrean selesai
+                if (offlineQueue.length === 0) {
+                    syncRetryCount = 0;
+                    showToast("Data berhasil disinkronkan ke Google Sheet!", "success");
+                    closeSyncQueueModal();
+                } else {
+                    // Masih ada sisa karena koneksi terputus
+                    scheduleSyncRetry();
+                }
+
             } catch (err) {
-                console.error("Sync error:", err);
-                showToast("Terjadi kesalahan saat sinkronisasi API. Anda tetap dapat menggunakan 'Salin Baris' atau unduh CSV.", "error");
+                console.error("Auto-sync error:", err);
+                const remaining = offlineQueue.length;
+                showToast(`Gagal menyinkronkan data: ${err.message || 'Koneksi bermasalah'}. Data tetap aman di antrean (${remaining} data tersisa).`, "error");
+                scheduleSyncRetry();
+            } finally {
+                isSyncing = false;
+                setSyncLoadingState(false);
             }
+        }
+
+        // Retry scheduler dengan jeda (backoff)
+        function scheduleSyncRetry() {
+            if (syncRetryTimer) {
+                clearTimeout(syncRetryTimer);
+                syncRetryTimer = null;
+            }
+
+            if (!navigator.onLine || offlineQueue.length === 0) return;
+
+            if (syncRetryCount < MAX_SYNC_RETRIES) {
+                syncRetryCount++;
+                const delayMs = syncRetryCount * 5000; // 5s, 10s, 15s
+                console.log(`Menjadwalkan sinkronisasi ulang ke-${syncRetryCount} dalam ${delayMs / 1000} detik...`);
+                showToast(`Sinkronisasi akan dicoba ulang otomatis dalam ${delayMs / 1000} detik (Percobaan ${syncRetryCount}/${MAX_SYNC_RETRIES})...`, "info");
+                
+                syncRetryTimer = setTimeout(() => {
+                    processOfflineQueueAuto(false);
+                }, delayMs);
+            } else {
+                showToast("Percobaan sinkronisasi otomatis mencapai batas maksimum. Silakan periksa jaringan dan klik tombol 'Sinkronkan Sekarang'.", "warning");
+            }
+        }
+
+        function setSyncLoadingState(loading) {
+            const syncIcon = document.getElementById('btn-manual-sync-icon');
+            const syncLabel = document.getElementById('btn-manual-sync-label');
+            const syncBtn = document.getElementById('btn-manual-sync-now');
+
+            if (loading) {
+                if (syncIcon) syncIcon.className = "fa-solid fa-spinner fa-spin text-emerald-200";
+                if (syncLabel) syncLabel.textContent = "Sinkronisasi...";
+                if (syncBtn) syncBtn.classList.add('opacity-75', 'cursor-not-allowed');
+            } else {
+                if (syncIcon) syncIcon.className = "fa-solid fa-rotate";
+                if (syncLabel) syncLabel.textContent = "Sinkronkan Sekarang";
+                if (syncBtn) syncBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+            }
+        }
+
+        // Sinkronisasi via Google Apps Script Web App (Dipanggil dari tombol di dalam modal)
+        async function syncOfflineQueueViaApi() {
+            await processOfflineQueueAuto(true, true);
         }
 
         // 1-Klik Salin Format Baris ke Clipboard untuk ditempel langsung di Google Sheets
@@ -5764,9 +5936,15 @@
                         <td class="py-3 px-4 text-right text-slate-600">${formatRupiah(item.hargaSatuan)}</td>
                         <td class="py-3 px-4 text-right font-bold text-slate-900">${formatRupiah(item.total)}</td>
                         <td class="py-3 px-4 text-center">
-                            ${item.isOffline 
-                                ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300 inline-flex items-center gap-1 shadow-2xs" title="Tersimpan lokal, belum sinkron ke cloud"><i class="fa-solid fa-cloud-arrow-up text-[9px] text-amber-600"></i> Offline</span>`
-                                : `<span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">${item.status}</span>`
+                            ${item.status === 'Lunas' 
+                                ? `<span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Lunas</span>`
+                                : `<span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-200">${item.status || 'Belum Lunas'}</span>`
+                            }
+                        </td>
+                        <td class="py-3 px-4 text-center">
+                            ${item.isOffline || item.syncStatus === 'Menunggu'
+                                ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300 inline-flex items-center gap-1 shadow-2xs" title="Tersimpan lokal, belum sinkron ke Google Sheet"><i class="fa-solid fa-clock text-[9px] text-amber-600"></i> Menunggu</span>`
+                                : `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 inline-flex items-center gap-1 shadow-2xs" title="Data telah tersinkronkan dengan Google Sheet"><i class="fa-solid fa-check text-[9px] text-emerald-600"></i> Tersinkron</span>`
                             }
                         </td>
                         <td class="py-3 px-4 text-center">
@@ -6591,9 +6769,10 @@
             e.preventDefault();
             const jumlah = parseFloat(document.getElementById('add-jumlah').value) || 0;
             const hargaSatuan = parseFloat(document.getElementById('add-harga').value) || 0;
+            const statusBayar = document.getElementById('add-status-bayar') ? document.getElementById('add-status-bayar').value : "Lunas";
             const isOnline = navigator.onLine;
 
-            const uniqueId = "TRX-" + Date.now();
+            const uniqueId = "TRX-" + Date.now() + "-" + Math.random().toString(36).substr(2, 6).toUpperCase();
             const newEntry = {
                 id: uniqueId,
                 tanggal: document.getElementById('add-tanggal').value,
@@ -6604,50 +6783,54 @@
                 satuan: document.getElementById('add-satuan').value,
                 hargaSatuan: hargaSatuan,
                 total: jumlah * hargaSatuan,
-                status: "Lunas",
-                isOffline: !isOnline
+                status: statusBayar,
+                isOffline: !isOnline,
+                syncStatus: isOnline ? (sheetConfig.googleAppsScriptUrl?.trim() ? "Tersinkron" : "Menunggu") : "Menunggu"
             };
 
             // Masukkan ke state lokal untuk langsung tampil di grafik & tabel
             salesData.unshift(newEntry);
             localStorage.setItem('banaho_local_sales', JSON.stringify(salesData));
 
-            // Tambahkan ke antrean offline jika tidak ada koneksi atau belum tersinkron
+            // Buat paket antrean dengan id unik & timestamp
+            const queueItem = {
+                id: uniqueId,
+                type: 'penjualan',
+                data: newEntry,
+                timestamp: new Date().toISOString()
+            };
+
             if (!isOnline) {
-                const queueItem = {
-                    id: uniqueId,
-                    type: 'penjualan',
-                    data: newEntry,
-                    timestamp: new Date().toISOString(),
-                    synced: false
-                };
+                // Offline: Simpan ke antrean lokal
                 offlineQueue.unshift(queueItem);
                 localStorage.setItem('banaho_offline_queue', JSON.stringify(offlineQueue));
                 updateOfflineQueueUI();
                 showToast(`[MODE OFFLINE] Transaksi ${newEntry.mitra} (${formatRupiah(newEntry.total)}) tersimpan aman di perangkat dan masuk antrean sinkronisasi!`, "warning");
             } else {
-                // Jika online dan memiliki Google Apps Script Web App URL, kirim otomatis
+                // Online
                 if (sheetConfig.googleAppsScriptUrl?.trim()) {
+                    // Kirim ke Google Apps Script
                     fetch(sheetConfig.googleAppsScriptUrl.trim(), {
                         method: 'POST',
                         mode: 'no-cors',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(newEntry)
-                    }).catch(err => console.warn("Background sync warning:", err));
+                    }).catch(err => {
+                        console.warn("Background sync warning, saving to offline queue:", err);
+                        // Jika gagal fetch, simpan ke antrean
+                        newEntry.isOffline = true;
+                        newEntry.syncStatus = "Menunggu";
+                        offlineQueue.unshift(queueItem);
+                        localStorage.setItem('banaho_offline_queue', JSON.stringify(offlineQueue));
+                        updateOfflineQueueUI();
+                    });
                     showToast(`Transaksi ${newEntry.mitra} berhasil dicatat dan disinkronkan ke Google Sheets!`, "success");
                 } else {
                     // Masukkan ke antrean sync sebagai backup
-                    const queueItem = {
-                        id: uniqueId,
-                        type: 'penjualan',
-                        data: newEntry,
-                        timestamp: new Date().toISOString(),
-                        synced: false
-                    };
                     offlineQueue.unshift(queueItem);
                     localStorage.setItem('banaho_offline_queue', JSON.stringify(offlineQueue));
                     updateOfflineQueueUI();
-                    showToast(`Transaksi ${newEntry.mitra} (${formatRupiah(newEntry.total)}) berhasil disimpan lokal & siap disinkronkan!`, "success");
+                    showToast(`Transaksi ${newEntry.mitra} (${formatRupiah(newEntry.total)}) berhasil disimpan lokal & masuk antrean sinkronisasi.`, "info");
                 }
             }
             

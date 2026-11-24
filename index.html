@@ -666,14 +666,53 @@
             <!-- ================================================================= -->
             <section id="tab-persediaan" class="tab-section hidden space-y-6">
                 
-                <div class="flex items-center justify-between">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h3 class="font-display font-bold text-slate-900 text-lg">Monitoring Stok Gudang & Dapur</h3>
-                        <p class="text-xs text-slate-500">Termasuk produk jadi, kemasan standing pouch sablon, dan bahan baku goreng</p>
+                        <p class="text-xs text-slate-500">Termasuk produk jadi, kemasan standing pouch sablon, dan bahan baku dapur</p>
                     </div>
-                    <button onclick="openQuickAddModal('persediaan')" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-2 cursor-pointer">
-                        <i class="fa-solid fa-plus"></i> Tambah Item Baru
-                    </button>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <!-- Tombol Undo Global untuk Stok -->
+                        <button id="btn-undo-stock-global" onclick="undoStockGlobal()" disabled title="Kembalikan perubahan stok terakhir" class="px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-not-allowed bg-slate-100 text-slate-400 border border-slate-200">
+                            <i class="fa-solid fa-rotate-left"></i> <span>Urungkan (Undo)</span>
+                        </button>
+
+                        <!-- Tombol Toggle Riwayat Perubahan Stok -->
+                        <button onclick="toggleStockHistoryPanel()" class="px-3 py-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer">
+                            <i class="fa-solid fa-clock-rotate-left text-amber-600"></i>
+                            <span>Riwayat Perubahan</span>
+                            <span id="stock-history-badge" class="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">0</span>
+                        </button>
+
+                        <!-- Tombol Tambah Item Baru -->
+                        <button onclick="openQuickAddModal('persediaan')" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-2 cursor-pointer shadow-sm">
+                            <i class="fa-solid fa-plus"></i> Tambah Item Baru
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Panel Kecil Riwayat Perubahan Stok (10 Perubahan Terakhir) -->
+                <div id="stock-history-panel" class="hidden bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-sm transition-all">
+                    <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+                        <div class="flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-bold">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-display font-bold text-xs sm:text-sm text-slate-900">Riwayat Perubahan Stok (10 Terakhir)</h4>
+                                <p class="text-[11px] text-slate-500">Mencatat penyesuaian tombol -5 / +10 dan aksi stok lainnya</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="clearStockHistory()" class="text-[11px] font-semibold text-rose-600 hover:underline cursor-pointer">Bersihkan Log</button>
+                            <button onclick="toggleStockHistoryPanel(false)" class="w-6 h-6 rounded-lg text-slate-400 hover:text-slate-600 flex items-center justify-center">
+                                <i class="fa-solid fa-xmark text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="stock-history-list" class="divide-y divide-slate-100 text-xs max-h-56 overflow-y-auto">
+                        <!-- Diisi dinamis oleh JS -->
+                    </div>
                 </div>
 
                 <!-- Grid Kartu Stok -->
@@ -1082,7 +1121,7 @@
                     </div>
                 </div>
                 <div class="pt-3 flex justify-end gap-2 border-t border-slate-100">
-                    <button type="button" onclick="closeQuickAddModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">Batal</button>
+                    <button type="button" onclick="closeQuickAddModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer flex items-center gap-1"><i class="fa-solid fa-arrow-left"></i> Batal / Kembali</button>
                     <button type="submit" class="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-sm cursor-pointer">
                         Simpan Item Stok
                     </button>
@@ -5343,6 +5382,13 @@
                 } catch (e) {}
             }
 
+            const savedStockHistory = localStorage.getItem('banaho_stock_history');
+            if (savedStockHistory) {
+                try {
+                    stockHistoryLog = JSON.parse(savedStockHistory);
+                } catch (e) {}
+            }
+
             // Set default date picker hari ini
             const today = new Date().toISOString().split('T')[0];
             const dateInput = document.getElementById('add-tanggal');
@@ -5985,43 +6031,390 @@
             showToast(`Batch ${itemToRestore.kodeBatch} berhasil dikembalikan ke posisi semula!`, "success");
         }
 
+        // State untuk Riwayat & Undo Perubahan Stok (Revisi 2)
+        let stockUndoStack = [];
+        let stockHistoryLog = [];
+        let stockToastTimer = null;
+        let itemToDeleteIndex = null;
+        let lastDeletedItemState = null;
+        let itemUndoTimer = null;
+
         function renderInventoryCards() {
             const grid = document.getElementById('inventory-cards-grid');
+            if (!grid) return;
             grid.innerHTML = '';
+
+            if (inventoryData.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400 bg-white rounded-2xl border border-slate-200">Belum ada item persediaan. Klik 'Tambah Item Baru' untuk menambahkan.</div>`;
+                updateStockUndoUI();
+                return;
+            }
 
             inventoryData.forEach((item, idx) => {
                 const isLow = item.stok <= item.minStok;
-                const badgeClass = isLow ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800';
+                const badgeClass = isLow ? 'bg-rose-100 text-rose-800 border-rose-200' : 'bg-emerald-100 text-emerald-800 border-emerald-200';
                 const statusText = isLow ? 'Perlu Restock!' : 'Aman';
 
                 grid.innerHTML += `
-                    <div class="bg-white p-5 rounded-2xl border ${isLow ? 'border-rose-300 ring-2 ring-rose-100' : 'border-slate-200/80'} shadow-sm flex flex-col justify-between">
+                    <div class="bg-white p-5 rounded-2xl border ${isLow ? 'border-rose-300 ring-2 ring-rose-100' : 'border-slate-200/80'} shadow-sm flex flex-col justify-between transition-all hover:shadow-md">
                         <div>
                             <div class="flex items-center justify-between mb-2">
-                                <span class="text-[11px] font-semibold text-slate-400 uppercase">${item.kategori} • ${item.kode}</span>
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${badgeClass}">${statusText}</span>
+                                <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">${item.kategori} • ${item.kode}</span>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${badgeClass}">${statusText}</span>
+                                    <button onclick="confirmDeleteItem(${idx})" title="Hapus Item Persediaan Ini" class="w-6 h-6 rounded-lg text-slate-300 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition cursor-pointer">
+                                        <i class="fa-solid fa-trash-can text-xs"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <h4 class="font-display font-bold text-slate-900 text-base">${item.nama}</h4>
+                            <h4 class="font-display font-bold text-slate-900 text-base leading-snug">${item.nama}</h4>
+                            <p class="text-[11px] text-slate-400 mt-0.5">Batas Minimum: <span class="font-semibold text-slate-600">${item.minStok} ${item.satuan}</span></p>
                         </div>
                         <div class="mt-4 pt-3 border-t border-slate-100 flex items-end justify-between">
                             <div>
                                 <p class="text-[11px] text-slate-400">Jumlah Stok Saat Ini</p>
-                                <p class="font-display text-2xl font-extrabold text-slate-900">${item.stok} <span class="text-xs font-medium text-slate-500">${item.satuan}</span></p>
+                                <p class="font-display text-2xl font-extrabold ${isLow ? 'text-rose-600' : 'text-slate-900'}">${item.stok} <span class="text-xs font-medium text-slate-500">${item.satuan}</span></p>
                             </div>
                             <div class="flex items-center gap-1.5">
-                                <button onclick="adjustStock(${idx}, -5)" title="Kurangi 5" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm cursor-pointer">-5</button>
-                                <button onclick="adjustStock(${idx}, 10)" title="Tambah 10" class="w-8 h-8 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-sm cursor-pointer">+10</button>
+                                <button onclick="adjustStock(${idx}, -5)" title="Kurangi 5 stok" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 font-bold text-xs transition cursor-pointer border border-slate-200">-5</button>
+                                <button onclick="adjustStock(${idx}, 10)" title="Tambah 10 stok" class="w-9 h-9 rounded-xl bg-amber-100 hover:bg-amber-200 active:scale-95 text-amber-950 font-bold text-xs transition cursor-pointer border border-amber-200">+10</button>
                             </div>
                         </div>
                     </div>
                 `;
             });
+
+            updateStockUndoUI();
+            renderStockHistoryList();
         }
 
+        // Penyesuaian stok dengan batasan tidak boleh negatif, riwayat perubahan, dan undo
         function adjustStock(index, delta) {
-            inventoryData[index].stok = Math.max(0, inventoryData[index].stok + delta);
+            const item = inventoryData[index];
+            if (!item) return;
+
+            const prevVal = item.stok;
+
+            // Jika pengurangan -5 membuat stok < 0, tahan di 0 dan beri peringatan
+            if (prevVal + delta < 0) {
+                if (prevVal === 0) {
+                    showToast(`Stok ${item.nama} sudah 0 ${item.satuan}, tidak dapat dikurangi lagi!`, "warning");
+                    return;
+                }
+                // Tahan di 0
+                item.stok = 0;
+                showToast(`Peringatan: Stok ${item.nama} tidak boleh negatif. Nilai ditahan pada 0 ${item.satuan}.`, "warning");
+            } else {
+                item.stok = Math.max(0, parseFloat((prevVal + delta).toFixed(1)));
+            }
+
+            const newVal = item.stok;
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+            // Simpan perubahan ke undo stack
+            const changeRecord = {
+                type: 'adjust',
+                index: index,
+                kode: item.kode,
+                nama: item.nama,
+                satuan: item.satuan,
+                prevVal: prevVal,
+                newVal: newVal,
+                delta: delta,
+                time: timeStr,
+                timestamp: Date.now()
+            };
+
+            stockUndoStack.push(changeRecord);
+            stockHistoryLog.unshift(changeRecord);
+            if (stockHistoryLog.length > 10) stockHistoryLog.pop();
+
+            // Simpan perubahan ke localStorage
+            localStorage.setItem('banaho_inventory_data', JSON.stringify(inventoryData));
+            localStorage.setItem('banaho_stock_history', JSON.stringify(stockHistoryLog));
+
+            // Perbarui tampilan kartu & status Aman/Perlu Restock!
             renderInventoryCards();
-            showToast(`Stok ${inventoryData[index].nama} diupdate: ${inventoryData[index].stok} ${inventoryData[index].satuan}.`, "info");
+
+            // Tampilkan toast dengan tombol Urungkan selama 6 detik
+            showStockChangeToast(changeRecord);
+        }
+
+        // Tampilkan Toast Notifikasi Perubahan Stok dengan Tombol Urungkan 6 Detik
+        function showStockChangeToast(record) {
+            const container = document.getElementById('toast-container');
+            if (stockToastTimer) clearTimeout(stockToastTimer);
+
+            const toastId = 'stock-change-toast';
+            const oldToast = document.getElementById(toastId);
+            if (oldToast) oldToast.remove();
+
+            const deltaText = record.delta > 0 ? `+${record.delta}` : `${record.delta}`;
+            const toast = document.createElement('div');
+            toast.id = toastId;
+            toast.className = "pointer-events-auto flex items-center justify-between gap-3 px-4 py-3 rounded-2xl border shadow-xl text-xs font-medium bg-slate-900 text-white border-slate-700 transition-all duration-300 transform translate-y-0";
+            toast.innerHTML = `
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <span class="w-6 h-6 rounded-lg ${record.delta > 0 ? 'bg-amber-400 text-amber-950' : 'bg-sky-400 text-sky-950'} flex items-center justify-center font-bold text-[10px] shrink-0 font-mono">
+                        ${deltaText}
+                    </span>
+                    <span class="truncate">Stok <strong>${record.nama}</strong>: ${record.prevVal} &rarr; <strong>${record.newVal} ${record.satuan}</strong></span>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                    <button onclick="undoLastStockChange()" class="px-2.5 py-1 rounded-xl bg-amber-400 hover:bg-amber-300 text-amber-950 font-bold text-xs transition cursor-pointer flex items-center gap-1 shadow-sm">
+                        <i class="fa-solid fa-rotate-left"></i> Urungkan
+                    </button>
+                    <span id="stock-undo-countdown" class="text-[10px] text-slate-400 font-mono">6s</span>
+                </div>
+            `;
+
+            container.appendChild(toast);
+
+            let seconds = 6;
+            const interval = setInterval(() => {
+                seconds--;
+                const span = document.getElementById('stock-undo-countdown');
+                if (span) span.textContent = `${seconds}s`;
+                if (seconds <= 0) clearInterval(interval);
+            }, 1000);
+
+            stockToastTimer = setTimeout(() => {
+                clearInterval(interval);
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 6000);
+        }
+
+        // Batalkan perubahan stok terakhir (baik dari toast maupun tombol Undo global)
+        function undoLastStockChange() {
+            if (stockUndoStack.length === 0) return;
+
+            if (stockToastTimer) clearTimeout(stockToastTimer);
+            const lastChange = stockUndoStack.pop();
+
+            // Kembalikan nilai stok ke prevVal
+            const targetItem = inventoryData[lastChange.index];
+            if (targetItem && targetItem.kode === lastChange.kode) {
+                targetItem.stok = lastChange.prevVal;
+            } else {
+                // Cari berdasarkan kode jika posisi array bergeser
+                const found = inventoryData.find(it => it.kode === lastChange.kode);
+                if (found) found.stok = lastChange.prevVal;
+            }
+
+            // Catat log pembatalan ke history
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            stockHistoryLog.unshift({
+                type: 'undo',
+                nama: lastChange.nama,
+                satuan: lastChange.satuan,
+                prevVal: lastChange.newVal,
+                newVal: lastChange.prevVal,
+                time: timeStr
+            });
+            if (stockHistoryLog.length > 10) stockHistoryLog.pop();
+
+            localStorage.setItem('banaho_inventory_data', JSON.stringify(inventoryData));
+            localStorage.setItem('banaho_stock_history', JSON.stringify(stockHistoryLog));
+
+            // Tutup toast perubahan
+            const toast = document.getElementById('stock-change-toast');
+            if (toast) toast.remove();
+
+            renderInventoryCards();
+            showToast(`Perubahan dibatalkan: Stok ${lastChange.nama} kembali ke ${lastChange.prevVal} ${lastChange.satuan}!`, "success");
+        }
+
+        // Tombol Undo Global di Header Halaman Stok
+        function undoStockGlobal() {
+            if (stockUndoStack.length === 0) {
+                showToast("Tidak ada perubahan stok untuk diurungkan.", "info");
+                return;
+            }
+            undoLastStockChange();
+        }
+
+        // Perbarui status tombol Undo Global dan Badge Riwayat
+        function updateStockUndoUI() {
+            const btn = document.getElementById('btn-undo-stock-global');
+            const badge = document.getElementById('stock-history-badge');
+
+            if (btn) {
+                if (stockUndoStack.length > 0) {
+                    btn.disabled = false;
+                    btn.className = "px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 shadow-xs";
+                } else {
+                    btn.disabled = true;
+                    btn.className = "px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-not-allowed bg-slate-100 text-slate-400 border border-slate-200";
+                }
+            }
+
+            if (badge) {
+                badge.textContent = stockHistoryLog.length;
+            }
+        }
+
+        // Toggle Panel Riwayat Perubahan Stok
+        function toggleStockHistoryPanel(forceState) {
+            const panel = document.getElementById('stock-history-panel');
+            if (!panel) return;
+            const isHidden = panel.classList.contains('hidden');
+            const shouldOpen = forceState !== undefined ? forceState : isHidden;
+
+            if (shouldOpen) {
+                panel.classList.remove('hidden');
+                renderStockHistoryList();
+            } else {
+                panel.classList.add('hidden');
+            }
+        }
+
+        // Render isi 10 Riwayat Perubahan Terakhir
+        function renderStockHistoryList() {
+            const listContainer = document.getElementById('stock-history-list');
+            if (!listContainer) return;
+            listContainer.innerHTML = '';
+
+            if (stockHistoryLog.length === 0) {
+                listContainer.innerHTML = `<p class="py-4 text-center text-slate-400 text-xs">Belum ada riwayat perubahan stok pada sesi ini.</p>`;
+                return;
+            }
+
+            stockHistoryLog.forEach(log => {
+                const isUndo = log.type === 'undo';
+                const tagColor = isUndo ? 'bg-purple-100 text-purple-800' : (log.delta > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-sky-100 text-sky-800');
+                const tagText = isUndo ? 'Undo' : (log.delta > 0 ? `+${log.delta}` : `${log.delta}`);
+
+                listContainer.innerHTML += `
+                    <div class="py-2.5 flex items-center justify-between">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <span class="px-2 py-0.5 rounded-md font-mono text-[10px] font-bold ${tagColor}">${tagText}</span>
+                            <span class="font-semibold text-slate-800 truncate">${log.nama}</span>
+                            <span class="text-slate-500 font-medium whitespace-nowrap">(${log.prevVal} &rarr; <strong>${log.newVal} ${log.satuan}</strong>)</span>
+                        </div>
+                        <span class="text-[11px] text-slate-400 font-mono shrink-0 ml-2">${log.time}</span>
+                    </div>
+                `;
+            });
+        }
+
+        function clearStockHistory() {
+            stockHistoryLog = [];
+            stockUndoStack = [];
+            localStorage.removeItem('banaho_stock_history');
+            renderStockHistoryList();
+            updateStockUndoUI();
+            showToast("Riwayat perubahan stok telah dibersihkan.", "info");
+        }
+
+        // Fitur Hapus Item Persediaan (dengan Konfirmasi & Undo)
+        function confirmDeleteItem(index) {
+            const item = inventoryData[index];
+            if (!item) return;
+
+            itemToDeleteIndex = index;
+            document.getElementById('delete-item-name-span').textContent = `${item.nama} (${item.kode})`;
+            document.getElementById('delete-item-stok-span').textContent = `Sisa Stok: ${item.stok} ${item.satuan} • Kategori: ${item.kategori}`;
+
+            const modal = document.getElementById('delete-item-confirm-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeDeleteItemModal() {
+            const modal = document.getElementById('delete-item-confirm-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+            itemToDeleteIndex = null;
+        }
+
+        function executeDeleteItem() {
+            if (itemToDeleteIndex === null || !inventoryData[itemToDeleteIndex]) {
+                closeDeleteItemModal();
+                return;
+            }
+
+            const deletedItem = inventoryData[itemToDeleteIndex];
+            const originalIndex = itemToDeleteIndex;
+
+            // Simpan state untuk Undo selama 6 detik
+            lastDeletedItemState = {
+                item: JSON.parse(JSON.stringify(deletedItem)),
+                index: originalIndex
+            };
+
+            inventoryData.splice(originalIndex, 1);
+            localStorage.setItem('banaho_inventory_data', JSON.stringify(inventoryData));
+
+            closeDeleteItemModal();
+            renderInventoryCards();
+            showUndoItemToast(deletedItem.nama);
+        }
+
+        function showUndoItemToast(itemName) {
+            const container = document.getElementById('toast-container');
+            if (itemUndoTimer) clearTimeout(itemUndoTimer);
+
+            const toastId = 'undo-item-toast';
+            const oldToast = document.getElementById(toastId);
+            if (oldToast) oldToast.remove();
+
+            const toast = document.createElement('div');
+            toast.id = toastId;
+            toast.className = "pointer-events-auto flex items-center justify-between gap-3 px-4 py-3 rounded-2xl border shadow-xl text-xs font-medium bg-slate-900 text-white border-slate-700 transition-all duration-300 transform translate-y-0";
+            toast.innerHTML = `
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <i class="fa-solid fa-trash-can text-rose-400 text-sm shrink-0"></i>
+                    <span class="truncate">Item <strong>${itemName}</strong> telah dihapus.</span>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                    <button onclick="undoDeleteItem()" class="px-2.5 py-1 rounded-xl bg-amber-400 hover:bg-amber-300 text-amber-950 font-bold text-xs transition cursor-pointer flex items-center gap-1 shadow-sm">
+                        <i class="fa-solid fa-rotate-left"></i> Urungkan (Undo)
+                    </button>
+                    <span id="undo-item-countdown" class="text-[10px] text-slate-400 font-mono">6s</span>
+                </div>
+            `;
+
+            container.appendChild(toast);
+
+            let seconds = 6;
+            const interval = setInterval(() => {
+                seconds--;
+                const span = document.getElementById('undo-item-countdown');
+                if (span) span.textContent = `${seconds}s`;
+                if (seconds <= 0) clearInterval(interval);
+            }, 1000);
+
+            itemUndoTimer = setTimeout(() => {
+                clearInterval(interval);
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+                lastDeletedItemState = null;
+            }, 6000);
+        }
+
+        function undoDeleteItem() {
+            if (!lastDeletedItemState || !lastDeletedItemState.item) return;
+
+            if (itemUndoTimer) clearTimeout(itemUndoTimer);
+
+            const itemToRestore = lastDeletedItemState.item;
+            const insertIndex = Math.min(lastDeletedItemState.index, inventoryData.length);
+
+            inventoryData.splice(insertIndex, 0, itemToRestore);
+            localStorage.setItem('banaho_inventory_data', JSON.stringify(inventoryData));
+
+            renderInventoryCards();
+
+            const toast = document.getElementById('undo-item-toast');
+            if (toast) toast.remove();
+
+            lastDeletedItemState = null;
+            showToast(`Item ${itemToRestore.nama} berhasil dikembalikan!`, "success");
         }
 
         // =====================================================================
@@ -6578,6 +6971,39 @@ Pesanan siap dikirim/diantar. Terima kasih atas kerja samanya bersama Banaho Mag
                 </button>
                 <button type="button" onclick="executeDeleteBatch()" class="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-md shadow-rose-200 transition cursor-pointer flex items-center gap-1.5">
                     <i class="fa-solid fa-trash-can"></i> Ya, Hapus Batch
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- ===================================================================== -->
+    <!-- MODAL 6: KONFIRMASI HAPUS ITEM PERSEDIAAN STOK                        -->
+    <!-- ===================================================================== -->
+    <div id="delete-item-confirm-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-xl shrink-0">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div>
+                    <h3 class="font-display font-bold text-lg text-slate-900">Konfirmasi Hapus Item</h3>
+                    <p class="text-xs text-slate-500">Hapus data item persediaan dari gudang</p>
+                </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-rose-50/80 border border-rose-200/80 text-xs text-rose-900 leading-relaxed mb-4">
+                <p class="font-bold text-sm mb-1 text-rose-950 flex items-center gap-1.5">
+                    <i class="fa-solid fa-trash-can text-rose-600"></i> Hapus item <span id="delete-item-name-span" class="font-semibold underline">-</span>?
+                </p>
+                <p id="delete-item-stok-span" class="text-slate-600 mb-2 font-medium">-</p>
+                <p class="text-rose-700">Kartu item ini akan dihapus dari monitoring stok. Anda tetap dapat mengurungkan (Undo) tindakan ini dalam waktu 6 detik setelah tombol hapus diklik.</p>
+            </div>
+
+            <div class="flex justify-end gap-2.5 pt-2">
+                <button type="button" onclick="closeDeleteItemModal()" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition cursor-pointer">
+                    Batal
+                </button>
+                <button type="button" onclick="executeDeleteItem()" class="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-md shadow-rose-200 transition cursor-pointer flex items-center gap-1.5">
+                    <i class="fa-solid fa-trash-can"></i> Ya, Hapus Item
                 </button>
             </div>
         </div>
